@@ -1,0 +1,7 @@
+__pycache__/
+*.log
+.vscode/
+
+# we don't want to keep track of the framework
+evoman/ 
+optimization*
