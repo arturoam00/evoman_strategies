@@ -20,5 +20,5 @@ $ python3 -m pip install -r requirements.txt
 
 Now you should be ready to go. In your activated virtual environment, try:
 ```bash
-$ python3 specialist.py
+$ python3 main.py
 ```
