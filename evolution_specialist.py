@@ -14,6 +14,7 @@ class EvolutionSpecialistBase:
         lower=-1,
         upper=1,
         n_hidden=10,
+        pcont=None,  # if provided, remember to specify the right number of hidden layers in `n_hidden`
         headless=True,
     ) -> None:
         self.pop_size = pop_size
@@ -25,7 +26,8 @@ class EvolutionSpecialistBase:
             os.environ["SDL_VIDEODRIVER"] = "dummy"
 
         self.env = EnvironmentSpecialist(experiment_name=experiment_name, enemies=[2])
-        self.env.player_controller = player_controller(n_hidden)
+        if not pcont:
+            pcont = player_controller(n_hidden)
         self.n_vars = (self.env.get_num_sensors() + 1) * n_hidden + (n_hidden + 1) * 5
         self.pop = np.random.uniform(
             self.lower, self.upper, (self.pop_size, self.n_vars)
@@ -95,6 +97,7 @@ class EvolutionSpecialistBase:
 
     def run_simulation(self, n_gens=30):
         for gen in range(n_gens):
+            self.gen = gen
             self.parents = self.select_parents()
             self.offspring = self.calculate_offspring()
             self.pop = self.selection()
