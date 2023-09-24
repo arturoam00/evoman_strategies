@@ -5,7 +5,7 @@ Just clone the repository and run:
 ```bash
 $ ./setup.sh
 ```
-to obtain the latest version of the framework. This will preserved just a static copy of the framework folder. If one wanted to update the framework, just run `setup.sh` again. 
+to obtain the latest version of the framework. This will preserve just a static copy of the framework folder. If one wanted to update the framework, just run `setup.sh` again. 
 
 
 Depending on your preferences, you can install the dependencies with `pipenv` or `pip`:
