@@ -6,7 +6,7 @@ from demo_controller import player_controller
 from environment_specialist import EnvironmentSpecialist
 
 
-class EvolutionSpecialist:
+class EvolutionSpecialistBase:
     def __init__(
         self,
         experiment_name,
@@ -15,7 +15,6 @@ class EvolutionSpecialist:
         upper=1,
         n_hidden=10,
         headless=True,
-        **kwargs,
     ) -> None:
         self.pop_size = pop_size
         self.lower = lower
@@ -32,7 +31,6 @@ class EvolutionSpecialist:
             self.lower, self.upper, (self.pop_size, self.n_vars)
         )
         self.fit_pop = None
-        self.kwargs = kwargs
 
     def _check_limits(self, x):
         if x < self.lower:
@@ -53,7 +51,7 @@ class EvolutionSpecialist:
         if self.fit_pop is None:
             self.fit_pop = self.env.evaluate(self.pop)
 
-        fps = EvolutionSpecialist.norm(self.fit_pop)
+        fps = EvolutionSpecialistBase.norm(self.fit_pop)
         parents = np.random.choice(
             np.arange(self.pop_size),
             size=int(self.pop_size * prop),
@@ -62,34 +60,10 @@ class EvolutionSpecialist:
         )
         return self.pop[parents]
 
-    def nonuniform_mutation(self, x, **kwargs):
-        try:
-            mutation_prob = kwargs["mutation_prob"]
-        except KeyError:
-            print("Mutation probabiliy UNDEFINED")
-            raise
-
-        for i in range(len(x)):
-            if mutation_prob >= np.random.uniform(0, 1):
-                x[i] += np.random.normal(0, 1)
-                x[i] = self._check_limits(x[i])
+    def mutate(self, x):
         return x
 
-    def self_adaptive_mutation(self, x):
-        raise NotImplementedError
-
-    def no_mutation(self, x, **kwargs):
-        return x
-
-    def mutate(self, x, mutation_strategy="no_mutation", **kwargs):
-        mutation = {
-            "non_uniform": self.nonuniform_mutation,
-            "self_adaptive": self.self_adaptive_mutation,
-            "no_mutation": self.no_mutation,
-        }
-        return mutation[mutation_strategy](x, **kwargs)
-
-    def calculate_offspring(self, **kwargs):
+    def calculate_offspring(self):
         n_parents = np.size(self.parents, 0)
         offspring = np.zeros((n_parents, self.n_vars))
 
@@ -106,8 +80,8 @@ class EvolutionSpecialist:
             offspring[i + 1] = alpha * p2 + (1 - alpha) * p1
 
             # mutate
-            offspring[i] = self.mutate(offspring[i], **kwargs)
-            offspring[i + 1] = self.mutate(offspring[i + 1], **kwargs)
+            offspring[i] = self.mutate(offspring[i])
+            offspring[i + 1] = self.mutate(offspring[i + 1])
 
         return offspring
 
@@ -120,16 +94,8 @@ class EvolutionSpecialist:
         return total[np.argsort(-fit_pop_total)][: self.pop_size]
 
     def run_simulation(self, n_gens=30):
-        mutation_strategy = self.kwargs.get("mutation_strategy", "non_uniform")
-        mutation_prob = self.kwargs.get("mutation_prob", 0.2)
-
         for gen in range(n_gens):
-            self.parents = self.select_parents(prop=0.5)
-            self.offspring = self.calculate_offspring(
-                mutation_strategy=mutation_strategy, mutation_prob=mutation_prob
-            )
+            self.parents = self.select_parents()
+            self.offspring = self.calculate_offspring()
             self.pop = self.selection()
-
-            print(
-                f"gen: {gen}; max_fit: {max(self.fit_pop)}; mean_fit: {np.mean(self.fit_pop)}; std_fit: {np.std(self.fit_pop)}"
-            )
+            yield
