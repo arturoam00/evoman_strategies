@@ -1,3 +1,5 @@
+from copy import copy
+
 import numpy as np
 
 
@@ -19,7 +21,11 @@ class EvolutionSpecialistBase:
         self.pop = np.random.uniform(
             self.lower, self.upper, (self.pop_size, self.n_vars)
         )
+        # simulation related attrs
         self.fit_pop = None
+        self.gen = None
+        self.parents = None
+        self.offspring = None
 
     def _check_limits(self, x):
         if x < self.lower:
@@ -28,19 +34,19 @@ class EvolutionSpecialistBase:
             return self.upper
         return x
 
-    @staticmethod
-    def norm(x):
-        try:
-            x -= min(x)  # remove negative values
-            return x / sum(x)
-        except ZeroDivisionError:
-            return x
+    def norm(self, x):
+        # this is called `sigma scaling`
+        c = 2
+        for i in range(len(x)):
+            x[i] = max(x[i] - (np.mean(self.fit_pop) - c * np.std(self.fit_pop)), 0)
+        return x / sum(x)
 
     def select_parents(self, prop=0.5):
         if self.fit_pop is None:
             self.fit_pop = self.env.evaluate(self.pop)
 
-        fps = EvolutionSpecialistBase.norm(self.fit_pop)
+        # this is important (to copy self.fit_pop) so as to not change the fitness values
+        fps = self.norm(copy(self.fit_pop))
         parents = np.random.choice(
             np.arange(self.pop_size),
             size=int(self.pop_size * prop),

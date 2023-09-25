@@ -5,3 +5,6 @@ __pycache__/
 # we don't want to keep track of the framework
 evoman/ 
 optimization*
+
+# test files
+test.py
