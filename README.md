@@ -29,16 +29,28 @@ One can run just the main file without modifying it:
 ```python
 # main.py
 
-from evoulution_specialist import EvolutionSpecialistBase
+import numpy as np
+
+from demo_controller import player_controller
+from environment_specialist import EnvironmentSpecialist
+from evolution_specialist import EvolutionSpecialistBase
 
 
 def main():
-    evo = EvolutionSpecialistBase(
-        experiment_name="specialist", pop_size=100, lower=-1, upper=1, n_hidden=10
+    n_hidden = 10  # neural network hidden layers
+
+    # initializes environment
+    env = EnvironmentSpecialist(
+        experiment_name="specialist",
+        enemies=[2],
+        player_controller=player_controller(n_hidden),
     )
 
+    # initializes evolution object
+    evo = EvolutionSpecialistBase(env=env, pop_size=100, lower=-1, upper=1)
+
     for _ in evo.run_simulation(n_gens=100):
-        print(max(evo.fit_pop)) # this will output maximum finess value of each generation
+        print(np.mean(evo.fit_pop))
 
 
 if __name__ == "__main__":
@@ -51,20 +63,14 @@ Or alternatively overwrite some of the base class methods to create a different 
 
 import numpy as np
 
-from evoulution_specialist import EvolutionSpecialistBase
+from demo_controller import player_controller
+from environment_specialist import EnvironmentSpecialist
+from evolution_specialist import EvolutionSpecialistBase
 
 
 class EvolutionSpecialist(EvolutionSpecialistBase):
-    def __init__(
-        self,
-        experiment_name,
-        pop_size=100,
-        lower=-1,
-        upper=1,
-        n_hidden=10,
-        headless=True,
-    ) -> None:
-        super().__init__(experiment_name, pop_size, lower, upper, n_hidden, headless)
+    def __init__(self, env, pop_size=100, lower=-1, upper=1) -> None:
+        super().__init__(env, pop_size, lower, upper)
 
     def mutate(self, x, prob=0.2):
         for i in range(len(x)):
@@ -75,18 +81,25 @@ class EvolutionSpecialist(EvolutionSpecialistBase):
 
 
 def main():
-    evo = EvolutionSpecialist(
-        experiment_name="specialist", pop_size=100, lower=-1, upper=1, n_hidden=10
+    n_hidden = 10  # neural network hidden layers
+
+    # initializes environment
+    env = EnvironmentSpecialist(
+        experiment_name="specialist",
+        enemies=[2],
+        player_controller=player_controller(n_hidden),
     )
+
+    # initializes evolution object
+    evo = EvolutionSpecialist(env=env, pop_size=100, lower=-1, upper=1)
 
     for _ in evo.run_simulation(n_gens=100):
         # do stuff 
-        # `evo.fit_pop` and `evo.pop` are maybe the attributes you want to do stuff with
+        # `evo.gen`, `evo.fit_pop` and `evo.pop` are maybe the attributes you want to do stuff with
         # for example `max(evo.fit_pop)` or `np.std(evo.fit_pop)` will output the maximum 
         # value and the standard deviation of the fitness respectively
 
 
 if __name__ == "__main__":
     main()
-
 ```
