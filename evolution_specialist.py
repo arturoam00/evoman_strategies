@@ -1,34 +1,21 @@
-import os
-
 import numpy as np
-
-from demo_controller import player_controller
-from environment_specialist import EnvironmentSpecialist
 
 
 class EvolutionSpecialistBase:
     def __init__(
         self,
-        experiment_name,
+        env,
         pop_size=100,
         lower=-1,
         upper=1,
-        n_hidden=10,
-        pcont=None,  # if provided, remember to specify the right number of hidden layers in `n_hidden`
-        headless=True,
     ) -> None:
+        self.env = env
         self.pop_size = pop_size
         self.lower = lower
         self.upper = upper
 
-        # this has to be done BEFORE initializing any environment
-        if headless:
-            os.environ["SDL_VIDEODRIVER"] = "dummy"
-
-        self.env = EnvironmentSpecialist(experiment_name=experiment_name, enemies=[2])
-        if not pcont:
-            pcont = player_controller(n_hidden)
-        self.n_vars = (self.env.get_num_sensors() + 1) * n_hidden + (n_hidden + 1) * 5
+        _n_hidden = self.env.player_controller.n_hidden[0]
+        self.n_vars = (self.env.get_num_sensors() + 1) * _n_hidden + (_n_hidden + 1) * 5
         self.pop = np.random.uniform(
             self.lower, self.upper, (self.pop_size, self.n_vars)
         )

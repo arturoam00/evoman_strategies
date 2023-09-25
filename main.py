@@ -1,37 +1,28 @@
+import os
+
 import numpy as np
 
+from demo_controller import player_controller
+from environment_specialist import EnvironmentSpecialist
 from evolution_specialist import EvolutionSpecialistBase
 
 
-# this is an example of how can one modify the default behaviour
-class EvolutionSpecialist(EvolutionSpecialistBase):
-    def __init__(
-        self,
-        experiment_name,
-        pop_size=100,
-        lower=-1,
-        upper=1,
-        n_hidden=10,
-        pcont=None,
-        headless=True,
-    ) -> None:
-        super().__init__(
-            experiment_name, pop_size, lower, upper, n_hidden, pcont, headless
-        )
-
-    def mutate(self, x, prob=0.0):
-        for i in range(len(x)):
-            if prob >= np.random.uniform(0, 1):
-                x[i] += np.random.normal(0, 1)
-                x[i] = self._check_limits(x[i])
-        return x
-
-
 def main():
-    # this is the default behaviour
-    evo = EvolutionSpecialist(
-        experiment_name="specialist", pop_size=100, lower=-1, upper=1, n_hidden=10
+    # this has to be done BEFORE initializing any environment
+    if True:
+        os.environ["SDL_VIDEODRIVER"] = "dummy"
+
+    n_hidden = 10  # neural network hidden layers
+
+    # initializes environment
+    env = EnvironmentSpecialist(
+        experiment_name="specialist",
+        enemies=[2],
+        player_controller=player_controller(n_hidden),
     )
+
+    # initializes evolution object
+    evo = EvolutionSpecialistBase(env=env, pop_size=100, lower=-1, upper=1)
 
     for _ in evo.run_simulation(n_gens=100):
         print(np.mean(evo.fit_pop))
