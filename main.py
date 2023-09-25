@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 
 from demo_controller import player_controller
@@ -8,10 +6,6 @@ from evolution_specialist import EvolutionSpecialistBase
 
 
 def main():
-    # this has to be done BEFORE initializing any environment
-    if True:
-        os.environ["SDL_VIDEODRIVER"] = "dummy"
-
     n_hidden = 10  # neural network hidden layers
 
     # initializes environment

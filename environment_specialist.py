@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 from evoman.environment import Environment
@@ -30,7 +32,11 @@ class EnvironmentSpecialist(Environment):
         enemy_controller=None,
         use_joystick=False,
         visuals=False,
+        headless=True,
     ):
+        if headless:
+            os.environ["SDL_VIDEODRIVER"] = "dummy"
+
         super().__init__(
             experiment_name,
             multiplemode,
