@@ -19,15 +19,13 @@ def indexes_closest_to_mean(x, n_values):
 
 
 class EA2(BaseEvolution):
-    def select_parents(self, prop=0.2):
-        if self.fit_pop is None:
-            self.fit_pop = self.env.evaluate(self.pop)
-
-        # select fitness indexes next to fitness mean (1/2 of the population by default)
-        l_idx, r_idx = indexes_closest_to_mean(
-            copy(self.fit_pop), int(prop * self.pop_size // 2)
+    def selection(self):
+        fit_pop_total = np.concatenate(
+            (self.fit_pop, self.env.evaluate(self.offspring))
         )
-        return self.pop[np.argsort(-self.fit_pop)][l_idx:r_idx]
+        total = np.vstack((self.pop, self.offspring))
+        self.fit_pop = np.array(sorted(fit_pop_total, reverse=True)[: self.pop_size])
+        return total[np.argsort(-fit_pop_total)][: self.pop_size]
 
     def mutate(self, x, prob=0.1):
         for i in range(len(x)):

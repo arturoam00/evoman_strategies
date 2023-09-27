@@ -7,9 +7,9 @@ name = "pypi"
 numpy = "*"
 pygame = "*"
 tmx = "*"
+matplotlib = "*"
 
 [dev-packages]
-matplotlib = "*"
 scipy = "*"
 
 [requires]
