@@ -102,3 +102,6 @@ class BaseEvolution:
         self.fit_pop = None
         self.parents = None
         self.offspring = None
+
+    def __str__(self) -> str:
+        return self.__class__.__name__

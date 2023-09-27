@@ -5,13 +5,13 @@ from base_evolution import BaseEvolution
 from demo_controller import player_controller
 from environment_ import Environment_
 
-with open("config.json", "r") as f:
-    cfg = json.load(f)
-
-*_, enemies, pop_size, n_gens, upper, lower = cfg.values()
-
 
 def main():
+    with open("config.json", "r") as f:
+        cfg = json.load(f)
+
+    *_, enemies, pop_size, n_gens, upper, lower = cfg.values()
+
     n_hidden = 10  # neural network hidden layers
 
     # initializes environment

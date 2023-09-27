@@ -18,7 +18,7 @@ $ pipenv install
 $ python3 -m pip install -r requirements.txt
 ```
 
-Now you should be ready to go. In your activated virtual environment, try:
+Now you should be ready to go. Navigate to the `evoulutionary_strategies` folder and, in your activated virtual environment, try:
 ```bash
 $ python3 main.py
 ```
@@ -27,7 +27,7 @@ $ python3 main.py
 
 The cleanest example of what one might want to do with this is in the file `main.py`. 
 
-Some parameters are loaded from a configuration object `config.json` and a single evolutionary simulation is run using the base class `BaseEvolution`. The environment for the simulation is the one from __EvoMan__ with a couple of irrelevant modifications. For each generation in the simulation, one can access to the different variables of interest as shown.
+Some parameters are loaded from a configuration object `config.json` and a single evolutionary simulation is run using the base class `BaseEvolution`. The environment for the simulation is the one from __EvoMan__ with a couple of non important modifications. For each generation in the simulation, one can access to the different variables of interest as shown.
 ```python
 # main.py
 
@@ -38,13 +38,13 @@ from base_evolution import BaseEvolution
 from demo_controller import player_controller
 from environment_ import Environment_
 
-with open("config.json", "r") as f:
-    cfg = json.load(f)
-
-*_, enemies, pop_size, n_gens, upper, lower = cfg.values()
-
 
 def main():
+    with open("config.json", "r") as f:
+        cfg = json.load(f)
+
+    *_, enemies, pop_size, n_gens, upper, lower = cfg.values()
+
     n_hidden = 10  # neural network hidden layers
 
     # initializes environment
@@ -59,11 +59,12 @@ def main():
 
     for _ in evo.run_simulation(n_gens=n_gens):
         print(np.mean(evo.fit_pop))
-        # also `evo.gen`, `evo.pop` or `evo.offspring` can be accessed
+        # also `evo.gen`, `evo.pop` or `evo.parents` can be accessed
 
 
 if __name__ == "__main__":
     main()
+
 ```
 
 The `BaseEvolution` class provides a starting point to build different evolutionary algorithms. It is possible to change just some evolutionary steps while keeping the default behaviour. For example:
@@ -85,3 +86,109 @@ class MyEvolution(BaseEvolution):
 
 ```
 
+## Comparing two Evolutionary Algorithms
+
+The file `compare_specialist.py` compares two Evolutionary Algorithms that train a specialist agent. 
+
+Consider the following steps:
+
+1. #### Configuration
+
+The configuration object `config.json` will be read by `compare_specialist.py` to set some parameters during the simulations. One can change the file by hand or call `setup_config.py` with the desired parameters as follows:
+```bash
+$ python3 setup_config.py [id_1] [id_2] [enemies] [population-size] [number-of-generations] [upper-bound-weights] [lower-bound-weights]
+```
+an example would be:
+
+```bash
+$ python3 setup_config.py "EA1" "EA2" "2" 100
+```
+That will set the configuration so that the id for the first algorithm to compare is "EA1", the second is "EA2" and the population size is 100. The rest of the values will be the default values. __The algorithm ids will be used to name the output data files__.
+
+2. #### Run simulations
+By default, 10 **independent** simulations are run for each of the algorithms. The data from this simulations is averaged and store in output data files under the `data/` folder. To do that simply run:
+```bash
+$ python3 compare_specialist.py
+```
+After the simulations, the **best individual out of the 10 independent runs** is saved and evaluated again against the same enemy, 5 times. The results are also saved in the same data file (one for each algorithm).
+
+3. #### Plot results
+
+To plot the results obtained in the previous step run:
+```bash
+$ python3 plotting.py
+```
+This will output two plots in the `images/` folder:
+ - A line plot presenting the averages over the 10 simulations of the mean fitness value and the maximum fitness value for each generation. 
+ - A box plot presenting the results of the best individual against the enemy on the five games. 
+
+
+ Remember that both `compare_specialist.py` and `plotting.py` read the configuration object `config.json`. 
+
+
+ ### Loop over enemies
+ To do every step of the comparasion of two EAs for all enemies, run:
+ ```bash
+ $ ./loop.sh
+ ```
+ This will perform the three steps of the comparasion (configuration, run simulation and plotting) for each enemy.
+
+
+ ### Run your own `compare_specialist.py`
+ Here it is sketched out how one compare two arbitrary EAs using this framework. 
+
+ ```python
+ # compare_specialist.py
+
+ class YourEA(BaseEvolution):
+    ...
+
+ class YourOtherEA(BaseEvolution):
+    ...
+
+def main():
+    # load configuration ...
+    with open("config.json") as f:
+        ...
+
+    # initialize important objects for simulations
+    n_hidden = ... # hidden layers for the neural network
+    n_sim = ... # number of simulations
+
+    # initialize environment 
+    env = Envrionment_(...)
+
+    # initialize your evolution objects
+    evo1 = YourEA(...)
+    evo2 = YourOtherEA(...)
+
+    # initialize data managers for each of your EAs
+    dm1 = DataManager(...)
+    dm2 = DataManager(...)
+
+    # create a mapping between data managers and EAs
+    dm = {evo1: dm1, evo2: dm2}
+
+    # run the simulations
+    for evo in [evo1, evo2]: # algorithms loop
+        for sim in range(n_sim): # simulations loop
+            for _ in evo.run_simulation(...): # generations loop
+                dm[evo].store_single_run(evo.gen, evo.pop, evo.fit_pop)
+            else:
+                evo.restore() # the runs must be independent, so restore the EA
+
+    # make your best guys play against the enemy again
+    n_runs = 5 # number of times they are playing
+    for d in [dm1, dm2]: # data managers loop
+        individual_gain = np.zeros(n_runs)
+
+        for i in range(n_runs): # games loop
+            individual_gain[i] = env.return_gain(d.best)
+    
+        # save results
+        d.store_individual_gain(individual_gain)
+        d.save_results(...)
+    
+    if __name__ == "__main__":
+        main()
+ ```
