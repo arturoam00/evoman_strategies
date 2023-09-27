@@ -2,9 +2,9 @@ __pycache__/
 *.log
 .vscode/
 
+# we don't keep track of output data
+images/
+data/
+
 # we don't want to keep track of the framework
 evoman/ 
-optimization*
-
-# test files
-test.py

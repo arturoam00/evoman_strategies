@@ -25,53 +25,57 @@ $ python3 main.py
 
 ## HowTo
 
-One can run just the main file without modifying it:
+The cleanest example of what one might want to do with this is in the file `main.py`. 
+
+Some parameters are loaded from a configuration object `config.json` and a single evolutionary simulation is run using the base class `BaseEvolution`. The environment for the simulation is the one from __EvoMan__ with a couple of irrelevant modifications. For each generation in the simulation, one can access to the different variables of interest as shown.
 ```python
 # main.py
 
-import numpy as np
+import json
 
+import numpy as np
+from base_evolution import BaseEvolution
 from demo_controller import player_controller
-from environment_specialist import EnvironmentSpecialist
-from evolution_specialist import EvolutionSpecialistBase
+from environment_ import Environment_
+
+with open("config.json", "r") as f:
+    cfg = json.load(f)
+
+*_, enemies, pop_size, n_gens, upper, lower = cfg.values()
 
 
 def main():
     n_hidden = 10  # neural network hidden layers
 
     # initializes environment
-    env = EnvironmentSpecialist(
+    env = Environment_(
         experiment_name="specialist",
-        enemies=[2],
+        enemies=[enemies],
         player_controller=player_controller(n_hidden),
     )
 
     # initializes evolution object
-    evo = EvolutionSpecialistBase(env=env, pop_size=100, lower=-1, upper=1)
+    evo = BaseEvolution(env=env, pop_size=pop_size, lower=lower, upper=upper)
 
-    for _ in evo.run_simulation(n_gens=100):
+    for _ in evo.run_simulation(n_gens=n_gens):
         print(np.mean(evo.fit_pop))
+        # also `evo.gen`, `evo.pop` or `evo.offspring` can be accessed
 
 
 if __name__ == "__main__":
     main()
 ```
 
-Or alternatively overwrite some of the base class methods to create a different evolutionary strategy. For example, if one wanted to modify the mutation (default is no mutation at all):
+The `BaseEvolution` class provides a starting point to build different evolutionary algorithms. It is possible to change just some evolutionary steps while keeping the default behaviour. For example:
 ```python
-# main.py
+# adding mutation to default evolution
 
 import numpy as np
 
-from demo_controller import player_controller
-from environment_specialist import EnvironmentSpecialist
-from evolution_specialist import EvolutionSpecialistBase
+from base_evolution import BaseEvolution
 
-
-class EvolutionSpecialist(EvolutionSpecialistBase):
-    def __init__(self, env, pop_size=100, lower=-1, upper=1) -> None:
-        super().__init__(env, pop_size, lower, upper)
-
+class MyEvolution(BaseEvolution):
+    
     def mutate(self, x, prob=0.2):
         for i in range(len(x)):
             if prob >= np.random.uniform(0, 1):
@@ -79,27 +83,5 @@ class EvolutionSpecialist(EvolutionSpecialistBase):
                 x[i] = self._check_limits(x[i])
         return x
 
-
-def main():
-    n_hidden = 10  # neural network hidden layers
-
-    # initializes environment
-    env = EnvironmentSpecialist(
-        experiment_name="specialist",
-        enemies=[2],
-        player_controller=player_controller(n_hidden),
-    )
-
-    # initializes evolution object
-    evo = EvolutionSpecialist(env=env, pop_size=100, lower=-1, upper=1)
-
-    for _ in evo.run_simulation(n_gens=100):
-        # do stuff 
-        # `evo.gen`, `evo.fit_pop` and `evo.pop` are maybe the attributes you want to do stuff with
-        # for example `max(evo.fit_pop)` or `np.std(evo.fit_pop)` will output the maximum 
-        # value and the standard deviation of the fitness respectively
-
-
-if __name__ == "__main__":
-    main()
 ```
+

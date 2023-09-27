@@ -15,7 +15,7 @@ else
 fi
 
 folder_to_copy="evoman"
-cp -r "$random_name/$folder_to_copy" .
+cp -r "$random_name/$folder_to_copy" ./evoman_strategies/
 
 # Check if the copy was successful
 if [ $? -eq 0 ]; then

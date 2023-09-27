@@ -3,7 +3,7 @@ from copy import copy
 import numpy as np
 
 
-class EvolutionSpecialistBase:
+class BaseEvolution:
     def __init__(
         self,
         env,
@@ -34,11 +34,10 @@ class EvolutionSpecialistBase:
             return self.upper
         return x
 
-    def norm(self, x):
+    def norm(self, x, c=2):
         # this is called `sigma scaling`
-        c = 2
         for i in range(len(x)):
-            x[i] = max(x[i] - (np.mean(self.fit_pop) - c * np.std(self.fit_pop)), 0)
+            x[i] = max(x[i] - (np.mean(self.fit_pop) - c * np.std(self.fit_pop)), 1e-15)
         return x / sum(x)
 
     def select_parents(self, prop=0.5):
@@ -95,3 +94,11 @@ class EvolutionSpecialistBase:
             self.offspring = self.calculate_offspring()
             self.pop = self.selection()
             yield
+
+    def restore(self):
+        self.pop = np.random.uniform(
+            self.lower, self.upper, (self.pop_size, self.n_vars)
+        )
+        self.fit_pop = None
+        self.parents = None
+        self.offspring = None

@@ -1,11 +1,10 @@
 import os
 
 import numpy as np
-
 from evoman.environment import Environment
 
 
-class EnvironmentSpecialist(Environment):
+class Environment_(Environment):
     def __init__(
         self,
         experiment_name="specialist",
@@ -67,6 +66,10 @@ class EnvironmentSpecialist(Environment):
     def simulation(self, pcont):
         f, *_ = self.play(pcont=pcont)
         return f
+
+    def return_gain(self, pcont):
+        _, plife, elife, _ = self.play(pcont=pcont)
+        return plife - elife
 
     def evaluate(self, pop):
         return np.array(list(map(lambda y: self.simulation(y), pop)))
