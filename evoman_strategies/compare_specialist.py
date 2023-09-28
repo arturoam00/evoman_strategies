@@ -1,52 +1,20 @@
 import json
-from copy import copy
 
 import numpy as np
-from base_evolution import BaseEvolution
+
+# from base_evolution import BaseEvolution
 from data_manager import DataManager
 from demo_controller import player_controller
+from ea1 import EA1
+from ea2 import EA2
 from environment_ import Environment_
 
-
-def indexes_closest_to_mean(x, n_values):
-    # first sort the array in *descending* order
-    x = np.sort(x)[::-1]
-    mean = np.mean(x)
-    closest_idx = np.argmin(np.abs(x - mean))
-    left_idx = max(closest_idx - n_values, 0)
-    right_idx = min(closest_idx + n_values, len(x) - 1)
-    return left_idx, right_idx
-
-
-class EA2(BaseEvolution):
-    def select_parents(self, prop=0.2):
-        if self.fit_pop is None:
-            self.fit_pop = self.env.evaluate(self.pop)
-
-        # select fitness indexes next to fitness mean (1/2 of the population by default)
-        l_idx, r_idx = indexes_closest_to_mean(
-            copy(self.fit_pop), int(prop * self.pop_size // 2)
-        )
-        return self.pop[np.argsort(-self.fit_pop)][l_idx:r_idx]
-
-    def mutate(self, x, prob=0.1):
-        for i in range(len(x)):
-            if prob > np.random.uniform():
-                x[i] += np.random.normal(0, 1)
-                x[i] = self._check_limits(x[i])
-        return x
-
-
-class EA1(BaseEvolution):
-    def __init__(self, env, pop_size=100, lower=-1, upper=1) -> None:
-        super().__init__(env, pop_size, lower, upper)
-
-    def mutate(self, x, prob=0.1):
-        for i in range(len(x)):
-            if prob > np.random.uniform():
-                x[i] += np.random.normal(0, 1)
-                x[i] = self._check_limits(x[i])
-        return x
+# def fix_indexes(l_idx, r_idx, value):
+# diff = r_idx - l_idx
+# if diff < value - 1 and l_idx == 0:
+# r_idx += value - r_idx - 1
+# elif diff < value - 1 and l_idx != 0:
+# pass
 
 
 def main():
@@ -79,19 +47,20 @@ def main():
     # for each evolutionary algorithm, run n_sim independent simulations
     for evo in [evo1, evo2]:
         for sim in range(n_sim):
-            print(f"Running simulation #{sim} for e.a. {str(evo)} ...")
+            print(
+                f"Running simulation #{sim} for e.a. {str(evo)} against enemy {enemies}..."
+            )
             for _ in evo.run_simulation(n_gens=n_gens):
                 dm[evo].store_single_run(evo.gen, evo.pop, evo.fit_pop)
             else:
                 evo.restore()
 
-    n_runs = 5
     for d in [dm1, dm2]:
-        individual_gain = np.zeros(n_runs)
+        individual_gain = np.zeros(len(d.best_guys))
 
         # best guy analysis (testing individual gain)
-        for i in range(n_runs):
-            individual_gain[i] = env.return_gain(d.best)
+        for i in range(len(d.best_guys)):
+            individual_gain[i] = env.return_gain(d.best_guys[i])
 
         # save final results
         d.store_individual_gain(individual_gain)

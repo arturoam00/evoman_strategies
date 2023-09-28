@@ -4,6 +4,11 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+with open("config.json", "r") as f:
+    cfg = json.load(f)
+
+id_1, id_2, enemies, *_ = cfg.values()
+
 
 def plot_lines(y1, y2, y3, y4, filename):
     # calculate standard deviations
@@ -18,10 +23,10 @@ def plot_lines(y1, y2, y3, y4, filename):
     fig, ax = plt.subplots()
 
     # plot lines
-    ax.plot(x, y1, label="mean EA1")
-    ax.plot(x, y2, label="max EA1")
-    ax.plot(x, y3, label="mean EA2")
-    ax.plot(x, y4, label="max EA2")
+    ax.plot(x, y1, label=f"mean {id_1}")
+    ax.plot(x, y2, label=f"max {id_1}")
+    ax.plot(x, y3, label=f"mean {id_2}")
+    ax.plot(x, y4, label=f"max {id_2}")
 
     # plot standard deviation areas
     ax.fill_between(x, y1 - std_1, y1 + std_1, alpha=0.2)
@@ -31,6 +36,7 @@ def plot_lines(y1, y2, y3, y4, filename):
 
     ax.set_xlabel("generations")
     ax.set_ylabel("fitness")
+    ax.set_title(f"enemy {enemies}")
     ax.legend()
 
     plt.savefig(filename, format="png")
@@ -41,11 +47,11 @@ def plot_lines(y1, y2, y3, y4, filename):
 def plot_boxes(a, b, filename):
     fig, ax = plt.subplots()
 
-    ax.boxplot([a, b], labels=["EA1", "EA2"])
+    ax.boxplot([a, b], labels=[f"{id_1}", f"{id_2}"])
 
     ax.set_xlabel("")
     ax.set_ylabel("individual_gain")
-    ax.set_title("Individual gain")
+    ax.set_title(f"Individual gain enemy {enemies}")
 
     plt.savefig(filename, format="png")
 
@@ -54,11 +60,6 @@ def plot_boxes(a, b, filename):
 
 def main(data_folder="data"):
     image_folder = "images"
-
-    with open("config.json", "r") as f:
-        cfg = json.load(f)
-
-    id_1, id_2, enemies, *_ = cfg.values()
 
     path_1 = os.path.join(data_folder, f"{id_1}_enemy{enemies}.npy")
     path_2 = os.path.join(data_folder, f"{id_2}_enemy{enemies}.npy")
