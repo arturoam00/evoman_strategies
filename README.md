@@ -110,7 +110,7 @@ By default, 10 **independent** simulations are run for each of the algorithms. T
 ```bash
 $ python3 compare_specialist.py
 ```
-After the simulations, the **best individual out of the 10 independent runs** is saved and evaluated again against the same enemy, 5 times. The results are also saved in the same data file (one for each algorithm).
+After the simulations, the **best individual** for each simulation is saved and evaluated again against the same enemy. The results are also saved in the same data file (one for each algorithm).
 
 3. #### Plot results
 
@@ -120,7 +120,7 @@ $ python3 plotting.py
 ```
 This will output two plots in the `images/` folder:
  - A line plot presenting the averages over the 10 simulations of the mean fitness value and the maximum fitness value for each generation. 
- - A box plot presenting the results of the best individual against the enemy on the five games. 
+ - A box plot presenting the results of the best individuals against the enemy (individual gain, i.e. player_life - enemy_life).
 
 
  Remember that both `compare_specialist.py` and `plotting.py` read the configuration object `config.json`. 
@@ -177,18 +177,17 @@ def main():
             else:
                 evo.restore() # the runs must be independent, so restore the EA
 
-    # make your best guys play against the enemy again
-    n_runs = 5 # number of times they are playing
-    for d in [dm1, dm2]: # data managers loop
-        individual_gain = np.zeros(n_runs)
+     for d in [dm1, dm2]:
+        individual_gain = np.zeros(len(d.best_guys))
 
-        for i in range(n_runs): # games loop
-            individual_gain[i] = env.return_gain(d.best)
-    
-        # save results
+        # best guy analysis (testing individual gain)
+        for i in range(len(d.best_guys)):
+            individual_gain[i] = env.return_gain(d.best_guys[i])
+
+        # save final results
         d.store_individual_gain(individual_gain)
         d.save_results(...)
-    
+
     if __name__ == "__main__":
         main()
  ```
