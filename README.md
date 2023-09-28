@@ -50,7 +50,7 @@ def main():
     # initializes environment
     env = Environment_(
         experiment_name="specialist",
-        enemies=[enemies],
+        enemies=enemies,
         player_controller=player_controller(n_hidden),
     )
 
