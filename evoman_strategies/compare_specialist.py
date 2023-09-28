@@ -9,13 +9,6 @@ from ea1 import EA1
 from ea2 import EA2
 from environment_ import Environment_
 
-# def fix_indexes(l_idx, r_idx, value):
-# diff = r_idx - l_idx
-# if diff < value - 1 and l_idx == 0:
-# r_idx += value - r_idx - 1
-# elif diff < value - 1 and l_idx != 0:
-# pass
-
 
 def main():
     # load configuration object

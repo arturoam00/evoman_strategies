@@ -4,14 +4,6 @@ import numpy as np
 
 
 class DataManager:
-    """Helps to save evolutionary data across many independent simulations
-    After n_sim simulations (each one with n_gen generations), one would
-    have:
-        - DataManager.mean_fits: mean of average fitness value for each generation
-        - DataManager.max_fits: mean of maximum fitness value for each generation
-        - DataManager.best: weights of the best individual across all simulations
-    """
-
     def __init__(self, id, n_sim, n_gens) -> None:
         self.id = id
         self.n_sim = n_sim
