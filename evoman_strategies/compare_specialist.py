@@ -43,12 +43,13 @@ def main():
     dm2 = DataManager(id=id_2, n_sim=n_sim, n_gens=n_gens)
 
     dm = {evo1: dm1, evo2: dm2}
+    id = {evo1: id_1, evo2: id_2}
 
     # for each evolutionary algorithm, run n_sim independent simulations
     for evo in [evo1, evo2]:
         for sim in range(n_sim):
             print(
-                f"Running simulation #{sim} for e.a. {str(evo)} against enemy {enemies}..."
+                f"Running simulation #{sim} for e.a. {id[evo]} against enemy {enemies}..."
             )
             for _ in evo.run_simulation(n_gens=n_gens):
                 dm[evo].store_single_run(evo.gen, evo.pop, evo.fit_pop)
