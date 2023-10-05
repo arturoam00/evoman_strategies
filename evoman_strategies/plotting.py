@@ -23,10 +23,10 @@ def plot_lines(y1, y2, y3, y4, filename):
     fig, ax = plt.subplots()
 
     # plot lines
-    ax.plot(x, y1, label=f"mean {id_1}")
-    ax.plot(x, y2, label=f"max {id_1}")
-    ax.plot(x, y3, label=f"mean {id_2}")
-    ax.plot(x, y4, label=f"max {id_2}")
+    ax.plot(x, y1, label=f"mean fitness {id_1}")
+    ax.plot(x, y2, label=f"max fitness {id_1}")
+    ax.plot(x, y3, label=f"mean fitness {id_2}")
+    ax.plot(x, y4, label=f"max fitness {id_2}")
 
     # plot standard deviation areas
     ax.fill_between(x, y1 - std_1, y1 + std_1, alpha=0.2)
@@ -34,10 +34,12 @@ def plot_lines(y1, y2, y3, y4, filename):
     ax.fill_between(x, y3 - std_3, y3 + std_3, alpha=0.2)
     ax.fill_between(x, y4 - std_4, y4 + std_4, alpha=0.2)
 
-    ax.set_xlabel("generations")
-    ax.set_ylabel("fitness")
-    ax.set_title(f"enemy {enemies}")
-    ax.legend()
+    ax.set_xlabel("Generations", fontsize=15)
+    ax.set_ylabel("Fitness", fontsize=15)
+    ax.set_title(f"Enemy {enemies}", fontsize=15)
+    ax.set_xlim(0, len(y1))
+    ax.set_ylim(min(np.min([y1, y2, y3, y4]), 0), 100)
+    ax.legend(loc="lower right", fontsize=14)
 
     plt.savefig(filename, format="png")
 
@@ -50,8 +52,8 @@ def plot_boxes(a, b, filename):
     ax.boxplot([a, b], labels=[f"{id_1}", f"{id_2}"])
 
     ax.set_xlabel("")
-    ax.set_ylabel("individual_gain")
-    ax.set_title(f"Individual gain enemy {enemies}")
+    ax.set_ylabel("Individual gain", fontsize=15)
+    ax.set_title(f"Enemy {enemies}", fontsize=15)
 
     plt.savefig(filename, format="png")
 

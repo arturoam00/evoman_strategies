@@ -13,5 +13,5 @@ class EA1(BaseEvolution):
                 x[i] = self._check_limits(x[i])
         return x
 
-    def select_parents(self, prop=0.2):
+    def select_parents(self, prop=0.5):
         return super().select_parents(prop)

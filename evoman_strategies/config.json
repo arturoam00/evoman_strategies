@@ -1,1 +1,1 @@
-{"id_1": "ea1-fps", "id_2": "ea2-closest-to-mean", "enemies": "7", "pop_size": 100, "n_gens": 100, "upper": 1.0, "lower": -1.0}
+{"id_1": "FPS", "id_2": "MCS", "enemies": "7", "pop_size": 100, "n_gens": 40, "upper": 1.0, "lower": -1.0}

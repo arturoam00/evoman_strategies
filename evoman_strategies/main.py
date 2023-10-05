@@ -25,7 +25,7 @@ def main():
     evo = BaseEvolution(env=env, pop_size=pop_size, lower=lower, upper=upper)
 
     for _ in evo.run_simulation(n_gens=n_gens):
-        print(np.mean(evo.fit_pop))
+        print(len(evo.pop[0]))
 
 
 if __name__ == "__main__":

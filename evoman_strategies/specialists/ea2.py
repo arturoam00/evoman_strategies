@@ -15,7 +15,7 @@ def indexes_closest_to_mean(x, n_values):
 
 
 class EA2(BaseEvolution):
-    def select_parents(self, prop=0.2):
+    def select_parents(self, prop=0.5):
         if self.fit_pop is None:
             self.fit_pop = self.env.evaluate(self.pop)
 

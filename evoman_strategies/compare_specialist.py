@@ -5,8 +5,8 @@ import numpy as np
 # from base_evolution import BaseEvolution
 from data_manager import DataManager
 from demo_controller import player_controller
-from ea1 import EA1
-from ea2 import EA2
+from specialists.ea1 import EA1
+from specialists.ea2 import EA2
 from environment_ import Environment_
 
 
