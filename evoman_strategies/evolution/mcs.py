@@ -1,7 +1,8 @@
 from copy import copy
 
 import numpy as np
-from base_evolution import BaseEvolution
+
+from .base_evolution import BaseEvolution
 
 
 def indexes_closest_to_mean(x, n_values):
@@ -14,18 +15,20 @@ def indexes_closest_to_mean(x, n_values):
     return left_idx, right_idx
 
 
-class EA2(BaseEvolution):
-    def select_parents(self, prop=0.5):
+class MCS(BaseEvolution):
+    def select_parents(self):
+        prop = self.params.get("parent_prop", self.parent_prop)
         if self.fit_pop is None:
             self.fit_pop = self.env.evaluate(self.pop)
 
         # select fitness indexes next to fitness mean (1/2 of the population by default)
         l_idx, r_idx = indexes_closest_to_mean(
-            copy(self.fit_pop), int(prop * self.pop_size // 2)
+            copy(self.fit_pop), int(prop * self.params.pop_size // 2)
         )
         return self.pop[np.argsort(-self.fit_pop)][l_idx:r_idx]
 
-    def mutate(self, x, prob=0.4):
+    def mutate(self, x):
+        prob = self.params.get("mutation_prob", self.mutation_prob)
         for i in range(len(x)):
             if prob > np.random.uniform():
                 x[i] += np.random.normal(0, 1)

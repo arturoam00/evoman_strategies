@@ -1,0 +1,10 @@
+defaults:
+  - base
+  - _self_
+
+create:
+  _target_: evolution.progressive.Progressive
+
+  params:
+    alpha: 0.5
+    beta: 0.5

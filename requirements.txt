@@ -2,3 +2,4 @@ numpy
 tmx
 pygame
 matplotlib
+hydra-core

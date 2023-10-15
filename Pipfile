@@ -8,9 +8,10 @@ numpy = "*"
 pygame = "*"
 tmx = "*"
 matplotlib = "*"
+hydra-core = "*"
+hydra-optuna-sweeper = "*"
 
 [dev-packages]
-scipy = "*"
 
 [requires]
 python_version = "3.10"

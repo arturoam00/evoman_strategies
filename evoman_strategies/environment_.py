@@ -1,4 +1,5 @@
 import os
+from collections.abc import Iterable
 
 import numpy as np
 from evoman.environment import Environment
@@ -9,7 +10,7 @@ class Environment_(Environment):
         self,
         experiment_name="specialist",
         multiplemode="no",
-        enemies=[2],
+        enemies="2",
         loadplayer="yes",
         loadenemy="yes",
         level=2,
@@ -35,6 +36,17 @@ class Environment_(Environment):
     ):
         if headless:
             os.environ["SDL_VIDEODRIVER"] = "dummy"
+
+        if not isinstance(enemies, str):
+            if not isinstance(enemies, Iterable):
+                enemies = str(enemies)
+            else:
+                enemies = "".join(enemies)
+
+        enemies.replace(",", "")
+
+        if len(enemies) > 1:
+            multiplemode = "yes"
 
         super().__init__(
             experiment_name,

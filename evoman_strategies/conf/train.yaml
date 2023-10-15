@@ -1,0 +1,21 @@
+defaults:
+  - config
+  - evolution: progressive
+  - override hydra/sweeper: optuna
+  - override hydra/sweeper/sampler: tpe
+  - _self_
+
+hydra:
+  sweeper:
+    sampler:
+      seed: 123
+    direction: maximize
+    study_name: train
+    storage: null
+    n_trials: 20
+    n_jobs: 1
+    params:
+      train.n_gens: 15
+      evolution.create.params.pop_size: 20
+      evolution.create.params.alpha: range(0.1, 0.9, 0.1)
+      evolution.create.params.beta: range(0.1, 0.9, 0.1)

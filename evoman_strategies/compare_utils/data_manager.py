@@ -51,6 +51,6 @@ class DataManager:
             "best_guys": self.best_guys,
         }
         if not os.path.exists(folder) and not os.path.isdir(folder):
-            os.mkdir(folder)
+            os.makedirs(folder)
 
-        np.save(os.path.join(folder, f"{self.id}_enemy{enemy}.npy"), arr_dict)
+        np.save(os.path.join(folder, f"{self.id}_enemies{enemy}.npy"), arr_dict)

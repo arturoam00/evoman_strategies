@@ -5,6 +5,9 @@ __pycache__/
 # we don't keep track of output data
 images/
 data/
+outputs/
+multirun/
+best_results/
 
 # we don't want to keep track of the framework
 evoman/ 

@@ -1,0 +1,9 @@
+create:
+  _target_: ???
+
+  params:
+    pop_size: 100
+    upper: 1
+    lower: -1
+    parent_prop: 0.5
+    

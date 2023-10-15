@@ -1,0 +1,4 @@
+type: generalist
+data_folder: data/generalist/
+image_folder: images/generalist/
+best_folder: best_results/generalist

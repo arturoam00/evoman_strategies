@@ -1,0 +1,10 @@
+defaults:
+  - base
+  - _self_
+
+create:
+  _target_: evolution.fps.FPS
+
+  params:
+    offspring_prop: 0.5
+    mutation_prob: 0.5
