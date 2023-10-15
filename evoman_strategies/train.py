@@ -45,10 +45,10 @@ def train(cfg):
     # check for improvements and if any, save new best individual
     if np.sum(games_new > 0) == np.sum(games_last > 0):
         if np.sum(games_new) > np.sum(games_last):
-            np.savetxt(best_path)
+            np.savetxt(best_path, this_best)
 
     elif np.sum(games_new > 0) > np.sum(games_last > 0):
-        np.savetxt(best_path)
+        np.savetxt(best_path, this_best)
 
     return np.sum(games_new > 0)
 
