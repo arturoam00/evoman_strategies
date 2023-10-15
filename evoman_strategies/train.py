@@ -23,9 +23,12 @@ def train(cfg):
         print(f"Running single simulation for {str(evo)}, generation #{evo.gen} ...")
 
     # set current and last best individuals
+    if not os.path.exists(cfg.agent.best_folder):
+        os.makedirs(cfg.agent.best_folder)
+
     best_path = os.path.join(cfg.agent.best_folder, "best.txt")
     if not os.path.exists(best_path):
-        last_best = evo.pop[1]
+        last_best = evo.pop[1]  # random reference solution
     else:
         last_best = np.loadtxt(best_path)
     this_best = evo.pop[0]
