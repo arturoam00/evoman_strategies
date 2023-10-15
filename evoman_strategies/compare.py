@@ -27,6 +27,7 @@ def main(cfg):
     comp = Comparer(evo1, evo2)
     dm1, dm2 = comp.compare(cfg.compare.n_sim, cfg.compare.n_gens)
 
+    # TODO: this should be adjusted to just happen when environment.type == specialist
     for d in [dm1, dm2]:
         individual_gain = np.zeros(len(d.best_guys))
 

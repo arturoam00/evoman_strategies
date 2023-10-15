@@ -13,7 +13,7 @@ def main(cfg):
 
     data_folder = os.path.join(root_directory, cfg.agent.data_folder)
     image_folder = os.path.join(root_directory, cfg.agent.image_folder)
-    filename = os.path.join(root_directory, cfg.results.lines_filename)
+    filename = os.path.join(root_directory, cfg.agent.lines_filename)
 
     enemies = str(cfg.environment.enemies)
     id_1, id_2 = cfg.compare.evo1, cfg.compare.evo2

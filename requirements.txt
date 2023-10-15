@@ -3,3 +3,4 @@ tmx
 pygame
 matplotlib
 hydra-core
+hydra-optuna-sweeper

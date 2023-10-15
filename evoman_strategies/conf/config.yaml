@@ -3,7 +3,7 @@ defaults:
   - evolution: progressive
   - _self_
 
-results:
+agent:
   lines_filename: "${agent.image_folder}line_plots_e${environment.enemies}.png"
 
 nn:
