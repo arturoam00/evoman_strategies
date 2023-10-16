@@ -112,7 +112,7 @@ class BaseEvolution:
         )
         return total[np.argsort(-fit_pop_total)][: self.params.pop_size]
 
-    def run_simulation(self, n_gens=30):
+    def run_simulation(self, n_gens):
         self._total_gen = n_gens
         for gen in range(n_gens):
             self.gen = gen
@@ -120,6 +120,14 @@ class BaseEvolution:
             self.offspring = self.calculate_offspring()
             self.pop = self.selection()
             yield
+
+    def run_all(self, n_gens):
+        sim = self.run_simulation(n_gens)
+        while True:
+            try:
+                next(sim)
+            except StopIteration:
+                return
 
     def restore(self):
         self.pop = np.random.uniform(
