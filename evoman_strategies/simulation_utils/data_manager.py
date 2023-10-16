@@ -15,7 +15,7 @@ class DataManager:
         self.best_guys = [None] * n_sim
         self.mean_fits = np.zeros(n_gens)
         self.max_fits = np.zeros(n_gens)
-        self.individual_gain = None
+        self.individual_gain = None  # is this necessary?
 
         self.sim_counter = 0
 
@@ -40,9 +40,11 @@ class DataManager:
             self.sim_counter += 1
         return
 
+    # TODO: this is too rigid, something like `save column` would be more convenient
     def store_individual_gain(self, arr):
         self.individual_gain = arr
 
+    # TODO: this should be more flexible, .csv, .json, ...
     def save_results(self, folder="data", enemy=""):
         arr_dict = {
             "mean_fits": self.mean_fits,

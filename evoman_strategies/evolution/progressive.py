@@ -5,7 +5,7 @@ class Progressive(BaseEvolution):
     @property
     def mutation_prop(self):
         alpha = self.params.get("alpha", 0.5)
-        return alpha - (self.gen / self._total_gen) ** 2
+        return max(alpha - (self.gen / self._total_gen) ** 2, 0.1)
 
     @property
     def offspring_prop(self):

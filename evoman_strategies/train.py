@@ -17,7 +17,7 @@ def train(cfg):
     )
 
     # initialize evolution objects
-    evo = instantiate(cfg.train.evo, env=env)
+    evo = instantiate(cfg.train.evolution, env=env)
 
     for i in evo.run_simulation(n_gens=cfg.train.n_gens):
         print(f"Running single simulation for {str(evo)}, generation #{evo.gen} ...")

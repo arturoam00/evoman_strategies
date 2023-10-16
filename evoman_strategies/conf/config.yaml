@@ -3,21 +3,19 @@ defaults:
   - evolution: progressive
   - _self_
 
-agent:
-  lines_filename: "${agent.image_folder}line_plots_e${environment.enemies}.png"
-
 nn:
   n_hidden: 10
 
-compare:
+simulation:
   n_sim: 10
   n_gens: 40
-  evo1: fps
-  evo2: mcs
+  evolutions:
+    - fps
+    - mcs
 
 train:
   n_gens: 40
-  evo: ${evolution.create}
+  evolution: ${evolution.create}
 
 environment:
   name: "environment_${agent.type}"

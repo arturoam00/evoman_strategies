@@ -6,5 +6,5 @@ create:
   _target_: evolution.progressive.Progressive
 
   params:
-    alpha: 0.5
-    beta: 0.5
+    alpha: 0.7
+    beta: 0.3
