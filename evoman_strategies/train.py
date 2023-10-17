@@ -17,10 +17,11 @@ def train(cfg):
     )
 
     # initialize evolution objects
-    evo = instantiate(cfg.train.evolution, env=env)
+    evo = instantiate(cfg.train._evolution, env=env)
 
-    for i in evo.run_simulation(n_gens=cfg.train.n_gens):
-        print(f"Running single simulation for {str(evo)}, generation #{evo.gen} ...")
+    # run evolution
+    print(f"Running {cfg.train.n_gens} generations for {str(evo)} ...")
+    evo.run_all(n_gens=cfg.train.n_gens) # this runs ALL n_gens generations without stopping
 
     # set current and last best individuals
     if not os.path.exists(cfg.agent.best_folder):
@@ -28,10 +29,10 @@ def train(cfg):
 
     best_path = os.path.join(cfg.agent.best_folder, "best.txt")
     if not os.path.exists(best_path):
-        last_best = evo.pop[1]  # random reference solution
+        last_best = evo.pop[1]  # random reference solution if none previously saved
     else:
         last_best = np.loadtxt(best_path)
-    this_best = evo.pop[0]
+    this_best = evo.pop[0] # the population is always SORTED a the end of each generation so the first individual is the fittest
 
     enemies = "12345678"
     games_new = np.zeros(len(enemies))
@@ -45,12 +46,17 @@ def train(cfg):
         games_new[i] = env.return_gain(pcont=this_best)
         games_last[i] = env.return_gain(pcont=last_best)
 
+    FOUND = False
     # check for improvements and if any, save new best individual
     if np.sum(games_new > 0) == np.sum(games_last > 0):
         if np.sum(games_new) > np.sum(games_last):
-            np.savetxt(best_path, this_best)
+            FOUND = True
 
     elif np.sum(games_new > 0) > np.sum(games_last > 0):
+        FOUND = True
+
+    if FOUND:
+        print("New best individual found! Saving results ...")
         np.savetxt(best_path, this_best)
 
     return np.sum(games_new > 0)

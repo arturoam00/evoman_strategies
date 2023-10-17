@@ -15,7 +15,7 @@ simulation:
 
 train:
   n_gens: 40
-  evolution: ${evolution.create}
+  _evolution: ${evolution.create}
 
 environment:
   name: "environment_${agent.type}"
