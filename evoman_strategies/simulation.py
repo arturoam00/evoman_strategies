@@ -6,8 +6,7 @@ from hydra.utils import instantiate
 from simulation_utils.simulator import Simulator
 
 
-def save_data_specialist(env, cfg, *args):
-    data_managers = args
+def save_data_specialist(env, cfg, data_managers):
     for d in data_managers:
         individual_gain = np.zeros(len(d.best_guys))
 
@@ -22,7 +21,7 @@ def save_data_specialist(env, cfg, *args):
     return
 
 
-def save_data_generalist(env, cfg, *args):
+def save_data_generalist(env, cfg, data_managers):
     pass
 
 
@@ -44,14 +43,14 @@ def main(cfg):
 
     # Initialize simulator and run n_sim simulations to collect average
     # fitness and max fitness data for each evolutionary strategy
-    simulator = Simulator(*evolutions)
+    simulator = Simulator(evolutions)
     data_managers = simulator.run(cfg.simulation.n_sim, cfg.simulation.n_gens)
 
     # dedicated function to save data to files
     if cfg.agent.type == "specialist":
-        save_data_specialist(env, cfg, *data_managers)
+        save_data_specialist(env, cfg, data_managers)
     else:
-        save_data_generalist(env, cfg, *data_managers)
+        save_data_generalist(env, cfg, data_managers)
     return
 
 

@@ -2,8 +2,8 @@ from .data_manager import DataManager
 
 
 class Simulator:
-    def __init__(self, *args) -> None:
-        self.evolutions = args
+    def __init__(self, evolutions) -> None:
+        self.evolutions = evolutions
 
     def run(self, n_sim, n_gens):
         # initialize data managers for the algorithms
