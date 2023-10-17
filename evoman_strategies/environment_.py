@@ -6,37 +6,39 @@ from evoman.environment import Environment
 
 
 class Environment_(Environment):
-    def __init__(
-        self,
-        experiment_name="specialist",
-        multiplemode="no",
-        enemies="2",
-        loadplayer="yes",
-        loadenemy="yes",
-        level=2,
-        playermode="ai",
-        enemymode="static",
-        speed="fastest",
-        inputscoded="no",
-        randomini="no",
-        sound="off",
-        contacthurt="player",
-        logs="off",
-        savelogs="yes",
-        clockprec="low",
-        timeexpire=3000,
-        overturetime=100,
-        solutions=None,
-        fullscreen=False,
-        player_controller=None,
-        enemy_controller=None,
-        use_joystick=False,
-        visuals=False,
-        headless=True,
-    ):
+    default_params = {
+        "experiment_name": "specialist",
+        "multiplemode": "no",
+        "enemies": "2",
+        "loadplayer": "yes",
+        "loadplayer": "yes",
+        "loadenemy": "yes",
+        "level": 2,
+        "playermode": "ai",
+        "enemymode": "static",
+        "speed": "fastest",
+        "inputscoded": "no",
+        "randomini": "no",
+        "sound": "off",
+        "contacthurt": "player",
+        "logs": "off",
+        "savelogs": "yes",
+        "clockprec": "low",
+        "timeexpire": 3000,
+        "overturetime": 100,
+        "solutions": None,
+        "fullscreen": False,
+        "player_controller": None,
+        "enemy_controller": None,
+        "use_joystick": False,
+        "visuals": False,
+    }
+
+    def __init__(self, headless=True, **kwargs):
         if headless:
             os.environ["SDL_VIDEODRIVER"] = "dummy"
 
+        enemies = kwargs.get("enemies", "2")
         if not isinstance(enemies, str):
             if not isinstance(enemies, Iterable):
                 enemies = str(enemies)
@@ -46,34 +48,12 @@ class Environment_(Environment):
         enemies.replace(",", "")
 
         if len(enemies) > 1:
-            multiplemode = "yes"
+            kwargs["multiplemode"] = "yes"
 
-        super().__init__(
-            experiment_name,
-            multiplemode,
-            enemies,
-            loadplayer,
-            loadenemy,
-            level,
-            playermode,
-            enemymode,
-            speed,
-            inputscoded,
-            randomini,
-            sound,
-            contacthurt,
-            logs,
-            savelogs,
-            clockprec,
-            timeexpire,
-            overturetime,
-            solutions,
-            fullscreen,
-            player_controller,
-            enemy_controller,
-            use_joystick,
-            visuals,
-        )
+        kwargs["enemies"] = enemies
+        self.default_params.update(kwargs)
+
+        super().__init__(**self.default_params)
 
     def simulation(self, pcont):
         f, *_ = self.play(pcont=pcont)
