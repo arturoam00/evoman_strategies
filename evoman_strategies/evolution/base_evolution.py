@@ -39,6 +39,10 @@ class BaseEvolution:
     def parent_prop(self):
         pass
 
+    @property
+    def fittest_individual(self):
+        return self.pop[np.argsort(-self.fit_pop)][0]
+
     def _check_limits(self, x):
         if x < self.params.lower:
             return self.params.lower

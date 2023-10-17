@@ -20,8 +20,9 @@ def train(cfg):
     evo = instantiate(cfg.train._evolution, env=env)
 
     # run evolution
+    # this runs ALL n_gens generations without stopping
     print(f"Running {cfg.train.n_gens} generations for {str(evo)} ...")
-    evo.run_all(n_gens=cfg.train.n_gens) # this runs ALL n_gens generations without stopping
+    evo.run_all(n_gens=cfg.train.n_gens)
 
     # set current and last best individuals
     if not os.path.exists(cfg.agent.best_folder):
@@ -32,7 +33,7 @@ def train(cfg):
         last_best = evo.pop[1]  # random reference solution if none previously saved
     else:
         last_best = np.loadtxt(best_path)
-    this_best = evo.pop[0] # the population is always SORTED a the end of each generation so the first individual is the fittest
+    this_best = evo.fittest_individual
 
     enemies = "12345678"
     games_new = np.zeros(len(enemies))
