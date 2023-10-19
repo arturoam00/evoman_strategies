@@ -1,9 +1,13 @@
 defaults:
   - config
-  - evolution: progressive
+  - evolution: adaptive
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
   - _self_
+
+_evolution: ${evolution.create}
+
+n_gens: 40
 
 hydra:
   sweeper:
@@ -12,11 +16,8 @@ hydra:
     direction: maximize
     study_name: train
     storage: null
-    n_trials: 40
+    n_trials: 100
     n_jobs: 1
     params:
-      train.n_gens: 40
-      evolution.create.params.pop_size: 100
-      evolution.create.params.alpha: range(0.6, 0.8, 0.05)
-      evolution.create.params.beta: range(0.2, 0.4, 0.05)
-      environment.enemies: "127"
+      evolution.create.params.learning_rate: range(0.16, 0.26, 0.005)
+      evolution.create.params.beta: range(0.5, 1,5, 0.1)

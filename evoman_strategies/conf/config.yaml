@@ -1,6 +1,5 @@
 defaults:
   - agent: generalist
-  - evolution: progressive
   - _self_
 
 nn:
@@ -10,12 +9,8 @@ simulation:
   n_sim: 10
   n_gens: 40
   evolutions:
-    - fps
-    - mcs
-
-train:
-  n_gens: 40
-  _evolution: ${evolution.create}
+    - adaptive
+    - progressive
 
 environment:
   name: "environment_${agent.type}"

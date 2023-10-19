@@ -19,6 +19,6 @@ class Simulator:
                     dm.store_single_run(evolution.gen, evolution.pop, evolution.fit_pop)
                 evolution.restore()
 
-        data_managers.append(dm)
+            data_managers.append(dm)
 
         return data_managers

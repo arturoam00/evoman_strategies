@@ -21,8 +21,19 @@ def save_data_specialist(env, cfg, data_managers):
     return
 
 
-def save_data_generalist(env, cfg, data_managers):
-    pass
+def save_data_generalist(cfg, data_managers):
+    for d in data_managers:
+        individual_gain = np.zeros(len(d.best_guys))
+
+        for i in range(len(d.best_guys)):
+            for enemy in "12345678":
+                env = Environment_(
+                    enemies=enemy, player_controller=player_controller(cfg.nn.n_hidden)
+                )
+                individual_gain[i] += env.return_gain(d.best_guys[i])
+
+        d.store_individual_gain(individual_gain)
+        d.save_results(folder=cfg.agent.data_folder, enemy=cfg.environment.enemies)
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
@@ -50,7 +61,7 @@ def main(cfg):
     if cfg.agent.type == "specialist":
         save_data_specialist(env, cfg, data_managers)
     else:
-        save_data_generalist(env, cfg, data_managers)
+        save_data_generalist(cfg, data_managers)
     return
 
 

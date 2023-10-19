@@ -14,13 +14,10 @@ class BaseEvolution:
         _n_hidden = self.env.player_controller.n_hidden[0]
         self._n_vars = (self.env.get_num_sensors() + 1) * _n_hidden + (
             _n_hidden + 1
-        ) * 5
-        self.pop = np.random.uniform(
-            self.params.lower,
-            self.params.upper,
-            (self.params.pop_size, self._n_vars),
-        )
-        # simulation related attrs
+        ) * 5  # this is the actual length of an individual
+        self.n_vars = self._n_vars  # this can be used to introduce evolving σs
+
+        self._pop = None
         self.fit_pop = None
         self.gen = None
         self.parents = None
@@ -29,19 +26,34 @@ class BaseEvolution:
 
     @property
     def offspring_prop(self):
-        pass
+        return self.params.offspring_prop
 
     @property
     def mutation_prob(self):
-        pass
+        return self.params.mutation_prob
+
+    @property
+    def mutation_ssize(self):
+        return self.params.mutation_ssize
 
     @property
     def parent_prop(self):
-        pass
+        return self.params.parent_prop
+
+    @property
+    def pop(self):
+        return self._pop[:, : self._n_vars]
 
     @property
     def fittest_individual(self):
         return self.pop[np.argsort(-self.fit_pop)][0]
+
+    @property
+    def max_fitness(self):
+        return np.max(self.fit_pop)
+
+    def evaluate(self, pop):
+        return self.env.evaluate(pop[:, : self._n_vars])
 
     def _check_limits(self, x):
         if x < self.params.lower:
@@ -51,42 +63,44 @@ class BaseEvolution:
         return x
 
     def norm(self, x):
-        c = self.params.get("sscaling_param", 2)
+        c = self.params.get("sigma_scaling", 2)
         # this is called `sigma scaling`
         for i in range(len(x)):
             x[i] = max(x[i] - (np.mean(self.fit_pop) - c * np.std(self.fit_pop)), 1e-15)
         return x / sum(x)
 
+    def initialization(self):
+        return np.random.uniform(
+            self.params.lower,
+            self.params.upper,
+            (self.params.pop_size, self.n_vars),
+        )
+
     def select_parents(self):
-        prop = self.params.get("parent_prop", self.parent_prop)
         if self.fit_pop is None:
-            self.fit_pop = self.env.evaluate(self.pop)
+            self.fit_pop = self.evaluate(self._pop)
 
         # this is important (to copy self.fit_pop) so as to not change the fitness values
         fps = self.norm(copy(self.fit_pop))
         parents = np.random.choice(
             np.arange(self.params.pop_size),
-            size=int(self.params.pop_size * prop),
+            size=int(self.params.pop_size * self.parent_prop),
             p=fps,
             replace=False,
         )
-        return self.pop[parents]
+        return self._pop[parents]
 
     def mutate(self, x):
-        prob = self.params.get("mutation_prob", self.mutation_prop)
-        for i in range(len(x)):
-            if prob > np.random.uniform():
-                x[i] += np.random.normal(0, 1)
+        for i in range(self._n_vars):
+            if self.mutation_prob > np.random.uniform():
+                x[i] += np.random.normal(0, self.mutation_ssize)
                 x[i] = self._check_limits(x[i])
         return x
 
     def calculate_offspring(self):
         n_parents = np.size(self.parents, 0)
-        n_offspring = int(
-            self.params.pop_size
-            * self.params.get("offspring_prop", self.offspring_prop)
-        )
-        offspring = np.zeros((n_offspring, self._n_vars))
+        n_offspring = int(self.params.pop_size * self.offspring_prop)
+        offspring = np.zeros((n_offspring, self.n_vars))
 
         for i in range(0, n_offspring - 1, 2):
             # select two parents out of all possible parents
@@ -107,10 +121,8 @@ class BaseEvolution:
         return offspring
 
     def selection(self):
-        fit_pop_total = np.concatenate(
-            (self.fit_pop, self.env.evaluate(self.offspring))
-        )
-        total = np.vstack((self.pop, self.offspring))
+        fit_pop_total = np.concatenate((self.fit_pop, self.evaluate(self.offspring)))
+        total = np.vstack((self._pop, self.offspring))
         self.fit_pop = np.array(
             sorted(fit_pop_total, reverse=True)[: self.params.pop_size]
         )
@@ -118,11 +130,13 @@ class BaseEvolution:
 
     def run_simulation(self, n_gens):
         self._total_gen = n_gens
+        self._pop = self.initialization()
+
         for gen in range(n_gens):
             self.gen = gen
             self.parents = self.select_parents()
             self.offspring = self.calculate_offspring()
-            self.pop = self.selection()
+            self._pop = self.selection()
             yield
 
     def run_all(self, n_gens):
@@ -134,11 +148,7 @@ class BaseEvolution:
                 return
 
     def restore(self):
-        self.pop = np.random.uniform(
-            self.params.lower,
-            self.params.upper,
-            (self.params.pop_size, self._n_vars),
-        )
+        self._pop = None
         self.fit_pop = None
         self.parents = None
         self.offspring = None

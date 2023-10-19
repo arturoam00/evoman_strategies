@@ -4,7 +4,3 @@ defaults:
 
 create:
   _target_: evolution.mcs.MCS
-
-  params:
-    offspring_prop: 0.5
-    mutation_prob: 0.5

@@ -17,13 +17,12 @@ def indexes_closest_to_mean(x, n_values):
 
 class MCS(BaseEvolution):
     def select_parents(self):
-        prop = self.params.get("parent_prop", self.parent_prop)
+        prop = self.parent_prop
         if self.fit_pop is None:
-            self.fit_pop = self.env.evaluate(self.pop)
+            self.fit_pop = self.evaluate(self._pop)
 
         # select fitness indexes next to fitness mean (1/2 of the population by default)
         l_idx, r_idx = indexes_closest_to_mean(
             copy(self.fit_pop), int(prop * self.params.pop_size // 2)
         )
-        return self.pop[np.argsort(-self.fit_pop)][l_idx:r_idx]
-
+        return self._pop[np.argsort(-self.fit_pop)][l_idx:r_idx]

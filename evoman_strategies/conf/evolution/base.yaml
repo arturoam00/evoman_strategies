@@ -6,4 +6,8 @@ create:
     upper: 1
     lower: -1
     parent_prop: 0.5
+    sigma_scaling: 2
+    offspring_prop: 0.5
+    mutation_prob: 0.5
+    mutation_ssize: 1
     
