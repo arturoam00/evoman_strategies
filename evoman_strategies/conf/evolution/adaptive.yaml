@@ -13,5 +13,5 @@ create:
 
     # mutation related params
     mutation_prob: 1
-    learning_rate: 0.18
+    learning_rate: 0.25
     epsilon_0: 0.1

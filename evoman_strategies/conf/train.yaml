@@ -19,5 +19,12 @@ hydra:
     n_trials: 100
     n_jobs: 1
     params:
-      evolution.create.params.alpha: range(0.95, 1.4, 0.1)
-      evolution.create.params.beta: range(0.5, 1.5, 0.1)
+      evolution.create.params.lambda_0: range(0.3,1,0.1)
+      evolution.create.params.a: range(1,2,0.1)
+      evolution.create.params.b: choice(1,2,3)
+
+      evolution.create.params.sigma_0: range(0.6, 1.5, 0.1)
+      evolution.create.params.c: range(0.5,1.5,0.1)
+      evolution.create.params.d: choice(1,2,3)
+
+      

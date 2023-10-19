@@ -67,7 +67,7 @@ class BaseEvolution:
         # this is called `sigma scaling`
         for i in range(len(x)):
             x[i] = max(x[i] - (np.mean(self.fit_pop) - c * np.std(self.fit_pop)), 1e-15)
-        return x / sum(x)
+        return x / np.sum(x)
 
     def initialization(self):
         return np.random.uniform(

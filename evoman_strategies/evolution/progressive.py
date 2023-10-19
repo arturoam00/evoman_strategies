@@ -12,7 +12,7 @@ class Progressive(BaseEvolution):
     @property
     def mutation_ssize(self):
         min_sigma = 0.1
-        return min(
+        return max(
             self.params.sigma_0
             - self.params.c * (self.gen / self._total_gen) ** self.params.d,
             min_sigma,

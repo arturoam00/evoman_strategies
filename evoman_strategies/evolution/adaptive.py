@@ -29,14 +29,14 @@ class Adaptive(BaseEvolution):
 
     def _check_sigma(self, x):
         if x < self.params.epsilon_0:
-            x = self.params.epsilon_0
+            return self.params.epsilon_0
         return x
 
     def mutate(self, x):
         # mutate sigmas FIRST
         for i in range(self.n_sigmas):
             x[-1 - i] *= np.exp(self.params.learning_rate * np.random.normal())
-            x[-1 - i] = self._check_sigma(x[-1 - 1])
+            x[-1 - i] = self._check_sigma(x[-1 - i])
 
         # then mutate individual
         for i in range(self._n_vars):
