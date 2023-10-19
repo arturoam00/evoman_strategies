@@ -6,8 +6,6 @@ create:
   _target_: evolution.adaptive.Adaptive
 
   params:
-    mutation_ssize: null
-    offspring_prop: null
     mutation_prob: 1
     beta: 1
     learning_rate: 0.18

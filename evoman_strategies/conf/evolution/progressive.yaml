@@ -9,5 +9,3 @@ create:
     mutation_prob: 1
     alpha: 1
     beta: 0.3
-    mutation_ssize: null
-    offspring_prop: null
