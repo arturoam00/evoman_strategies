@@ -1,6 +1,6 @@
 defaults:
   - config
-  - evolution: adaptive
+  - evolution: progressive
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
   - _self_
@@ -19,5 +19,5 @@ hydra:
     n_trials: 100
     n_jobs: 1
     params:
-      evolution.create.params.learning_rate: range(0.16, 0.26, 0.005)
+      evolution.create.params.alpha: range(0.95, 1.4, 0.1)
       evolution.create.params.beta: range(0.5, 1.5, 0.1)

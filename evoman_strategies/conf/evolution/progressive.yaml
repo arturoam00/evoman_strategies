@@ -6,6 +6,13 @@ create:
   _target_: evolution.progressive.Progressive
 
   params:
+    # offspring related params
+    lambda_0: 0.3
+    a: 1
+    b: 2
+
+    # mutation related params
     mutation_prob: 1
-    alpha: 1
-    beta: 0.3
+    sigma_0: 1
+    c: 0.9
+    d: 2 

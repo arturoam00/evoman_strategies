@@ -3,11 +3,17 @@ from .base_evolution import BaseEvolution
 
 class Progressive(BaseEvolution):
     @property
-    def mutation_ssize(self):
-        alpha = self.params.get("alpha", 1)
-        return alpha - 0.9 * (self.gen / self._total_gen) ** 2
+    def offspring_prop(self):
+        return (
+            self.params.lambda_0
+            + self.params.a * (self.gen / self._total_gen) ** self.params.b
+        )
 
     @property
-    def offspring_prop(self):
-        beta = self.params.get("beta", 0.3)
-        return beta + (self.gen / self._total_gen) ** 2
+    def mutation_ssize(self):
+        min_sigma = 0.1
+        return min(
+            self.params.sigma_0
+            - self.params.c * (self.gen / self._total_gen) ** self.params.d,
+            min_sigma,
+        )

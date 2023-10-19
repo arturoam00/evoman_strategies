@@ -11,8 +11,10 @@ class Adaptive(BaseEvolution):
 
     @property
     def offspring_prop(self):
-        beta = self.params.get("beta", 0.3)
-        return beta + (self.gen / self._total_gen) ** 2
+        return (
+            self.params.lambda_0
+            + self.params.a * (self.gen / self._total_gen) ** self.params.b
+        )
 
     def initialization(self):
         population = np.random.uniform(

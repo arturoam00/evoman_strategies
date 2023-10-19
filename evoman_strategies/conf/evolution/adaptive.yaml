@@ -6,7 +6,12 @@ create:
   _target_: evolution.adaptive.Adaptive
 
   params:
+    # offspring related params
+    lambda_0: 1
+    a: 1
+    b: 2
+
+    # mutation related params
     mutation_prob: 1
-    beta: 1
     learning_rate: 0.18
     epsilon_0: 0.1
