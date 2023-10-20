@@ -6,6 +6,7 @@ from random import choice, seed
 import hydra
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import ttest_ind
 
 seed(123)
 
@@ -18,6 +19,11 @@ def rand_color():
 
 def enemies_label(e):
     return f"[{','.join(str(e))}]"
+
+
+def test_means(a, b):
+    t, p = ttest_ind(a, b)
+    return f"T-value: {np.round(t, 3)}, p-value: {np.round(p, 3)}"
 
 
 @hydra.main(config_name="config", config_path="../conf", version_base=None)
@@ -55,13 +61,26 @@ def main(cfg):
 
     for e in enemies:
         color = rand_color()
+        _indi_gains = []
 
         for evo in evolutions:
             path = os.path.join(data_folder, f"{evo}_enemies{e}.npy")
             arr_dict = np.load(path, allow_pickle=True).item()
-            indi_gains = arr_dict["individual_gain"]
+            indi_gains = arr_dict["individual_gain"] / 8
             boxes.append(
                 Box(data=indi_gains, enemies=enemies_label(e), ea=evo, color=color)
+            )
+            _indi_gains.append(indi_gains)
+            print(
+                f"Average individual gain for E.A. {evo} trained against enemies {e}: "
+                + f"{np.round(np.mean(indi_gains), 2)} ± {np.round(np.std(indi_gains), 2)}"
+            )
+
+        # statistical test of the individual gains bet
+        if len(_indi_gains) == 2:
+            print(
+                f"Restults for the t-test comparing {evolutions} for enemies {e}: "
+                + f"{test_means(*_indi_gains)}"
             )
 
     bx = ax.boxplot(
