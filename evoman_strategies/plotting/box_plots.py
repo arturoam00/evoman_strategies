@@ -59,7 +59,7 @@ def main(cfg):
         for evo in evolutions:
             path = os.path.join(data_folder, f"{evo}_enemies{e}.npy")
             arr_dict = np.load(path, allow_pickle=True).item()
-            indi_gains = arr_dict["individual_gain"] / 8
+            indi_gains = arr_dict["individual_gain"]
             boxes.append(
                 Box(data=indi_gains, enemies=enemies_label(e), ea=evo, color=color)
             )
