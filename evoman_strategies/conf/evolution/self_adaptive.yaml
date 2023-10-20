@@ -3,13 +3,13 @@ defaults:
   - _self_
 
 create:
-  _target_: evolution.adaptive.Adaptive
+  _target_: evolution.self_adaptive.SelfAdaptive
 
   params:
     # offspring related params
-    lambda_0: 1
-    a: 1
-    b: 2
+    lambda_0: 0.8
+    a: 1.5
+    b: 3
 
     # mutation related params
     mutation_prob: 1

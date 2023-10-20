@@ -9,8 +9,8 @@ simulation:
   n_sim: 10
   n_gens: 40
   evolutions:
-    - adaptive
-    - progressive
+    - self_adaptive
+    - deterministic
 
 environment:
   name: "environment_${agent.type}"

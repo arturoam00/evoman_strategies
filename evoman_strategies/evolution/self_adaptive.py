@@ -3,7 +3,7 @@ import numpy as np
 from .base_evolution import BaseEvolution
 
 
-class Adaptive(BaseEvolution):
+class SelfAdaptive(BaseEvolution):
     def __init__(self, env, params) -> None:
         super().__init__(env, params)
         self.n_sigmas = 1
@@ -45,3 +45,6 @@ class Adaptive(BaseEvolution):
                 x[i] += sigma * np.random.normal(0, 1)
                 x[i] = self._check_limits(x[i])
         return x
+
+    def __str__(self) -> str:
+        return "Self_Adaptive"

@@ -1,7 +1,7 @@
 from .base_evolution import BaseEvolution
 
 
-class Progressive(BaseEvolution):
+class Deterministic(BaseEvolution):
     @property
     def offspring_prop(self):
         return (

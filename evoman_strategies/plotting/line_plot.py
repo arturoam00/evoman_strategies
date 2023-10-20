@@ -62,7 +62,7 @@ def main(cfg):
     ax.set_title(f"Enemies {','.join(enemies)}", fontsize=15)
     ax.set_xlim(0, gens)
     ax.set_ylim(min(np.min([line.values for line in lines]), 0), 100)
-    ax.legend(loc="lower right", fontsize=14)
+    ax.legend(loc="upper left", fontsize=12)
 
     plt.savefig(filename + ".png", format="png")
 

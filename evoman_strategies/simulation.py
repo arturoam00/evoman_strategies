@@ -24,15 +24,16 @@ def save_data_specialist(env, cfg, data_managers):
 def save_data_generalist(cfg, data_managers):
     for d in data_managers:
         individual_gain = np.zeros(len(d.best_guys))
+        enemies = "12345678"
 
         for i in range(len(d.best_guys)):
-            for enemy in "12345678":
+            for enemy in enemies:
                 env = Environment_(
                     enemies=enemy, player_controller=player_controller(cfg.nn.n_hidden)
                 )
                 individual_gain[i] += env.return_gain(d.best_guys[i])
 
-        d.store_individual_gain(individual_gain)
+        d.store_individual_gain(individual_gain / len(enemies))
         d.save_results(folder=cfg.agent.data_folder, enemy=cfg.environment.enemies)
 
 

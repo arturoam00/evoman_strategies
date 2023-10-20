@@ -3,16 +3,16 @@ defaults:
   - _self_
 
 create:
-  _target_: evolution.progressive.Progressive
+  _target_: evolution.deterministic.Deterministic
 
   params:
     # offspring related params
-    lambda_0: 0.3
-    a: 1
+    lambda_0: 0.7
+    a: 1.9
     b: 2
 
     # mutation related params
     mutation_prob: 1
     sigma_0: 1
     c: 0.9
-    d: 2 
+    d: 1 
